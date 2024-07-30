@@ -1,8 +1,14 @@
 import DataHora from "./DataHora.js";
 import Tela from "./Tela.js";
+import Operacao from "./Operacao.js";
 export default class CalculadoraController {
-    constructor(tela = new Tela()) {
+    constructor(tela = new Tela(), operacao = new Operacao({
+        onCalculado: (resultado) => {
+            this.tela.conteudo = resultado;
+        }
+    })) {
         this.tela = tela;
+        this.operacao = operacao;
         new DataHora();
         this.eventosBotoes();
     }
@@ -27,6 +33,7 @@ export default class CalculadoraController {
                     case "subtracao":
                     case "divisao":
                     case "multiplicacao":
+                        this.adicionarOperacao(target.dataset.valor);
                         break;
                     case "ponto":
                         break;
@@ -37,13 +44,24 @@ export default class CalculadoraController {
                     case "porcentagem":
                         break;
                     case "igual":
+                        this.calcular();
                         break;
                 }
             });
         });
     }
+    calcular() {
+        this.operacao.calcular();
+    }
+    adicionarOperacao(valor) {
+        this.operacao.adicionar(valor);
+    }
     adicionarNumero(numero) {
         this.tela.conteudo = numero.toString();
+        this.adicionarOperacao(numero.toString());
+    }
+    adicionarOperador(operador) {
+        this.adicionarOperacao(operador);
     }
 }
 //# sourceMappingURL=CalculadoraController.js.map

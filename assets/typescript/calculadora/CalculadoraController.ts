@@ -1,10 +1,16 @@
 import DataHora from "./DataHora.js";
 import Tela from "./Tela.js";
+import Operacao from "./Operacao.js";
 
 export default class CalculadoraController{
 
     constructor(
-        private tela = new Tela()
+        private tela = new Tela(),
+        private operacao = new Operacao({
+            onCalculado: (resultado: string) => {
+                this.tela.conteudo = resultado;
+            }
+        })
     ){
         new DataHora();
         this.eventosBotoes();        
@@ -32,7 +38,7 @@ export default class CalculadoraController{
                     case "subtracao":
                     case "divisao":
                     case "multiplicacao":
-                    
+                        this.adicionarOperacao(target.dataset.valor as string);
                     break;
 
                     case "ponto":
@@ -52,7 +58,7 @@ export default class CalculadoraController{
                     break;
 
                     case "igual":
-
+                    this.calcular();
                     break;
 
 
@@ -60,7 +66,22 @@ export default class CalculadoraController{
              });
         });
     }
+
+    calcular(): void{
+        this.operacao.calcular();
+    }
+
+    adicionarOperacao(valor: string):void {
+        this.operacao.adicionar(valor);
+    }
+
     adicionarNumero(numero: number): void{
         this.tela.conteudo = numero.toString();
+
+        this.adicionarOperacao(numero.toString());
+    }
+
+    adicionarOperador(operador: string): void{
+        this.adicionarOperacao(operador);
     }
 }
