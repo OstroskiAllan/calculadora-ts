@@ -76,12 +76,27 @@ export default class CalculadoraController{
     }
 
     adicionarNumero(numero: number): void{
+        if(isNaN(Number(this.operacao.ultimaPosicao))){
+            this.adicionarOperacao(numero.toString());
+        }else{
+            numero = Number(this.operacao.ultimaPosicao.toString() + numero.toString());
+
+            this.operacao.ultimaPosicao = numero.toString();
+        }
+        
         this.tela.conteudo = numero.toString();
 
-        this.adicionarOperacao(numero.toString());
     }
 
     adicionarOperador(operador: string): void{
-        this.adicionarOperacao(operador);
+        if(isNaN(Number(this.operacao.ultimaPosicao))){
+            this.operacao.ultimaPosicao = operador;
+        }else{
+            if(this.operacao.length === 0){
+                this.adicionarOperacao("0");
+            }
+            this.adicionarOperacao(operador);
+        }
+
     }
 }
